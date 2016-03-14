@@ -1,0 +1,77 @@
+﻿<html>
+	<head>
+		<style>
+			html,body{
+				padding:0px;
+				margin:0px;
+				background:#222;
+			}
+			*{
+				    transition: all 1s ease;
+			}
+			.selectButton{
+				padding:10px;
+				 color:white;
+				 cursor:pointer;
+				background:red;
+			}
+			.selectButton:hover{
+				 background:none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="intro" style="position: absolute;    width: 100%;color: white;">
+			<div id="GameIntro1" style="padding: 55px;padding-top: 14%;text-align: center;opacity:0;">
+				<a href="mailto:abdullahaltahery@gmail.com"><img src="icon.png" /></a><br>
+				<div id="scors" style="opacity:0">
+					<span>Score : <span style="color:red" id="score"></span></span>
+					<span>Shots : <span style="color:red" id="shots"></span></span>
+					<span>Health : <span style="color:red" id="health"></span></span>
+				</div>
+			</div>
+			<!--<div id="GameIntro2" style=" text-align: center;opacity:0;">
+				<div style="width:200px;text-align:left;margin-left: auto;margin-right: auto;">
+					<span ><b>Chose your tank :</b></span>
+					<div style="font-size:14px">
+					<input type="radio" name="tankType" value="1" checked />
+						Fighter (speed 10 , strong 50)
+						
+					</div>
+					<div style="font-size:14px">
+
+						<input type="radio" name="tankType" value="2" />
+						Roket (speed 30 , strong 20)
+					</div>
+					<div style="font-size:14px">
+						<input type="radio" name="tankType" value="3" />
+						Remover (speed 5 , strong 60)
+					</div>
+				</div>
+			</div>
+			<div id="GameIntro3" style=" text-align: center;opacity:0;">
+				<div style="width:200px;text-align:left;margin-left: auto;margin-right: auto;">
+					<span >Chose your weapon :</span>
+					<div style="font-size:14px">
+						
+						<input type="radio" name="ShotType" value="1" checked />
+						RadioActive 
+					</div>
+					<div style="font-size:14px">
+						
+						<input type="radio" name="ShotType" value="2" />
+						ArrowShot
+					</div>
+				</div>
+			</div>-->
+			<div id="GameIntro4" style="    text-align: center;
+			color: white;
+			opacity:0;font-family: fantasy;
+			font-size: 3em;padding: 20px;">
+				<span id="start_game" class="selectButton">START</span>
+			</div>
+		</div>
+		<canvas id="game" width="1000" height="1000" ></canvas>
+		<script type="text/javascript" src="RandomAttack.js"  ></script>
+	</body>
+</html>
