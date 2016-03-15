@@ -42,9 +42,56 @@ function color(r,g,b,a){
 	}
 	
 }
+function getSecs(ms){
+	if(ms)
+		return (new Date().getTime() );
+	else
+		return (new Date().getTime() / 1000);
+}
+sounds={'shot1':{play:0},
+					'shot1E':{play:0},
+					'shot2':{play:0},
+					'shot2E':{play:0},
+					'shotBig':{play:0},
+					'shotBigP':{play:0},
+					'starUp':{play:0},
+					'kill':{play:0},
+					};
+
 function playSound(name){
-	var audio = new Audio(name+".mp3");
-	audio.play();
+	if(name=='kill' || name=='shotBig' || name=='shotBigP'){
+		if(sounds[name].play == 0){
+			sounds[name].play =getSecs(true);
+		}else{
+
+			if(sounds[name].play+500<getSecs(true)){
+				var audio = new Audio(name+".mp3");
+				audio.play();
+				sounds[name].play=getSecs(true);
+			}
+		}
+	}else if(name=='shot1' || name=='shot2'  || name=='shotBigP'){
+		if(sounds[name].play == 0){
+			sounds[name].play =getSecs(true);
+		}else{
+			if(sounds[name].play+100<getSecs(true)){
+				var audio = new Audio(name+".mp3");
+				audio.play();
+				sounds[name].play=getSecs(true);
+			}
+		}
+	}else if(name=='shot1E' || name=='shot2E' ){
+		if(sounds[name].play == 0){
+			sounds[name].play =getSecs(true);
+		}else{
+
+			if(sounds[name].play+300<getSecs(true)){
+				var audio = new Audio(name+".mp3");
+				audio.play();
+				sounds[name].play=getSecs(true);
+			}
+		}
+	}
 }
 function randNumber(max,min){
 	return Math.floor((Math.random()*max))+min;
@@ -89,13 +136,18 @@ document.onmousemove  = function(e){
 		ctx.arc(posX,posY,size,0,2*Math.PI);
 		ctx.stroke();
 	}
+	function draw_text (size,text,posX,posY,col){
+		ctx.font=size+"px sans-serif";
+		ctx.fillStyle=col.getString();
+		ctx.fillText(text,posX,posY);
+	}
 	var time_started=[];
 	function AfterSecs(secs,id,func){
 			if(time_started[id]!=-1){
 				if(typeof time_started[id] === "undefined"){
-					time_started[id] = (new Date().getTime() / 1000)+secs;
+					time_started[id] = getSecs()+secs;
 				}else{
-					if( (new Date().getTime()  / 1000) - time_started[id] > 0 ){
+					if( getSecs()- time_started[id] > 0 ){
 						func();
 						time_started[id]=-1;
 					}
@@ -815,11 +867,13 @@ document.onmousemove  = function(e){
 				ShotStrong:6.2,
 				damage:40,
 				Shild:10,
-				ID:"Player",
+
+				ID:"Team1",
 				weapon:"normalShot",
 				boxColor : new color( 255, 20, 20, 0.8 ),
 				look:1,
 				drawShape : function(AfterCalcXY){
+						
 						if(this.Health>=60)
 							draw_rec(AfterCalcXY.X,AfterCalcXY.Y-10,new color(0,200,0,1),this.Health*0.2,5);
 						else if(this.Health>=40)
@@ -844,7 +898,7 @@ document.onmousemove  = function(e){
 		setInterval(function(){
 			if(START_GAME){
 				if(EnmyCount<NUMBEROFENMY){
-					CreateEnmyCount(1,"normalShot",10,new color(200,200,0,0.8),5);
+					CreateEnmyCount(1,"normalShot",10,new color(200,200,0,0.8),5,"Team2");
 					EnmyCount++;
 				}
 			}
@@ -852,26 +906,31 @@ document.onmousemove  = function(e){
 		setInterval(function(){
 				if(START_GAME){
 					if(EnmyCount<NUMBEROFENMY){
-						CreateEnmyCount(1,"normalShot",10,new color(200,200,0,0.8),5);
+						CreateEnmyCount(1,"normalShot",10,new color(200,200,0,0.8),5,"Team2");
 						EnmyCount++;
 					}
 				}
 		},1000);
 		setInterval(function(){
 			if(START_GAME){
-					CreateEnmyCount(2,"normalShot",30,new color(20,20,20,1),50);
+					CreateEnmyCount(2,"normalShot",30,new color(20,20,20,1),50,"Team2");
 			}
 		},20000);
 		setInterval(function(){
+			if(START_GAME){
+					CreateEnmyCount(1,"normalShot",30,new color(255,20,20,1),50,"Team1");
+			}
+		},5000);
+		setInterval(function(){
 				if(START_GAME){
-					CreateEnmyCount(5,"normalShot",10,new color(200,20,200,1),10);
-					CreateEnmyCount(5,"BigBoom",10,new color(200,20,200,1),10);
+					CreateEnmyCount(5,"normalShot",10,new color(200,20,200,1),10,"Team3");
+					CreateEnmyCount(5,"BigBoom",10,new color(200,20,200,1),10,"Team3");
 				}
 			},50000);
 		START_GAME=true;
 		document.getElementById("scors").style.opacity=1;
 	}
-		function CreateEnmyCount(num,weapon,weapon_power,colr,sh){
+		function CreateEnmyCount(num,weapon,weapon_power,colr,sh,Team){
 				for(var i=0;i<num;i++){
 					var Enmy1=new boxObj();
 					Enmy1.setBox(
@@ -887,6 +946,7 @@ document.onmousemove  = function(e){
 							weapon:weapon,
 							boxColor : colr,
 							Shild:sh,
+							ID:Team,
 							look:randNumber(4,0),
 							drawShape : function(AfterCalcXY){
 									if(this.Health>=60)
@@ -969,10 +1029,14 @@ document.onmousemove  = function(e){
 						ShotsAry[b].draw(gameCanvas.width,gameCanvas.height,mouseXY);
 					}
 					for(var b=0;b<TanksAry.length;b++){
+						draw_text(10,TanksAry[b].ID,TanksAry[b].shape_pos.X,TanksAry[b].shape_pos.Y-15,TanksAry[b].boxColor);
 						TanksAry[b].draw(gameCanvas.width,gameCanvas.height,mouseXY);
 						//draw_cir_stork(TanksAry[b].shape_pos.X+TanksAry[b].shape_size.sizeX,TanksAry[b].shape_pos.Y+TanksAry[b].shape_size.sizeY,TanksAry[b].boxColor,14);
 					}
-					CalcCollitions(TanksAry,ShotsAry);
+					if(START_GAME){
+						CalcCollitions(TanksAry,ShotsAry);
+					}
+					
 					
 			
 			if(Player.Health<=0){
@@ -998,13 +1062,15 @@ document.onmousemove  = function(e){
 			if(ary[i].Health>0){
 				tary.push(ary[i]);
 			}else{
-				CreateEnmyCount(1,"normalShot",10,new color(230,200,230,1),15);
-				if(NUM_DEAD>3)
+				CreateEnmyCount(1,"normalShot",10,new color(230,200,230,1),15,"Team2");
+				if(NUM_DEAD>3){
 					Player.weapon="BigBoom";
+					playSound("starUp");
+				}
 				else if(NUM_DEAD>20)
-					CreateEnmyCount(1,"BigBoom",20,new color(230,200,0,1),5);
+					CreateEnmyCount(1,"BigBoom",20,new color(230,200,0,1),5,"Team2");
 				else if(NUM_DEAD>50)
-					CreateEnmyCount(1,"BigBoom",50,new color(20,20,0,1),5);
+					CreateEnmyCount(1,"BigBoom",50,new color(20,20,0,1),5,"Team2");
 
 					
 				
